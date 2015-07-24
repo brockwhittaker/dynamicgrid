@@ -13,7 +13,8 @@ var gridObject = {
 		margin: 10
 	},
 	minWidthHeightRatio: 3,
-	photoContainerElem: document.getElementById('photo-container')
+	photoContainerElem: document.getElementById('photo-container'),
+	containerList: null
 };
 ```
 

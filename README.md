@@ -35,6 +35,8 @@ Note that all the photographs must already be inside the photo container div for
 
 Make sure also to set your photo container to `visibility: hidden` before executing the function. Otherwise you will see all the photos load to the container before gridding themselves.
 
+You can now statically load a `containerList` by putting in a `containerList` argument into the object. The array will then be used to grid the photos rather than generating and calculating the grid on each load.
+
 Finally, to execute the function, run `createGrid(gridObject)`.
 
 A demo of this is available on my site [here](http://lavancier.com/dynamicgrid/test.html).

@@ -47,7 +47,7 @@ You can now statically load a `containerList` by putting in a `containerList` ar
 ###Function Execution
 Finally, to execute the function, run `createGrid(gridObject)`.
 
-#Demo
+###Demo
 A demo of this is available on my site [here](http://lavancier.com/dynamicgrid/test.html).
 
 If you have any questions, feel free to reach me at [brock@lavancier.com](brock@lavancier.com).

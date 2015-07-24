@@ -97,9 +97,22 @@ function createGrid (obj) {
 	} else {
 		var containerList = generateContainerList();
 	}
+
+	if (obj.container.width !== null && typeof obj.container.width !== "undefined") {
+		var width = obj.container.width;
+	} else {
+		var width = obj.photoContainerElem.offsetWidth;
+	}
+
+	if (obj.container.margin !== null && typeof obj.container.margin !== "undefined") {
+		var margin = obj.container.margin;
+	} else {
+		var margin = 0;
+	}
+	
 	var ratioArr = getRatios(containerList);
 	var groupData = groupImages(ratioArr, obj.maxWidthHeightRatio);
-	var rowHeights = findRowHeight(groupData, obj.container.width, obj.container.margin, obj.container.width / obj.minWidthHeightRatio);
+	var rowHeights = findRowHeight(groupData, width, margin, width / obj.minWidthHeightRatio);
 	var imgAttr = printImages(containerList, rowHeights, groupData, ratioArr, obj);
 	obj.photoContainerElem.style.visibility = "visible";
 }

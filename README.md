@@ -57,6 +57,8 @@ $("#photo-container img").on('load', function(){
 });
 ```
 
+##Execution
+
 ###Function Execution
 Finally, to execute the function, run `createGrid(gridObject)`.
 

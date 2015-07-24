@@ -71,7 +71,6 @@ function printImages (containerList, rowHeights, groupData, ratioArr, imgArr) {
 	}
 
 	return imgAttr;
-
 }
 
 function createGrid (obj) {

@@ -1,5 +1,22 @@
 /* dynamicgrid.js */
 
+function createNode (type, className, id, src, parent, height, width) {
+	var node = document.createElement(type);
+	node.setAttribute("class", className) || false;
+	if (id !== null) {
+		node.id = id || false;			
+	}
+	if (className !== null) {
+		node.setAttribute("class", className) || false;
+	}
+
+	node.style.height = height + "px";
+	node.style.width = width + "px";
+	node.setAttribute("src", src);
+
+	parent.appendChild(node);
+}
+
 function generateContainerList () {
 	var array = obj.photoContainerElem.querySelectorAll("img")
 
@@ -59,11 +76,12 @@ function findRowHeight (groupData, width, margin, maxHeight) {
 	return rowHeights;
 }
 
-function printImages (containerList, rowHeights, groupData, ratioArr, imgArr) {
+function printImages (containerList, rowHeights, groupData, ratioArr, imgArr, obj) {
 	var imgAttr = [];
 	obj.photoContainerElem.innerHTML = "";
 	for (var x = 0; x < containerList.length; x++) {
-		obj.photoContainerElem.innerHTML += "<img class='photo' src=" + containerList[x][2] + " style='height:" + rowHeights[groupData[2][x]] + "px;width:" + ratioArr[x] * rowHeights[groupData[2][x]]  +"px'></div>";
+		createNode("img", "photo", null, containerList[x][2], obj.photoContainerElem, rowHeights[groupData[2][x]], rowHeights[groupData[2][x]] * ratioArr[x]);
+
 		imgAttr[x] = {
 			"height" : rowHeights[groupData[2][x]],
 			"width" : ratioArr[x] * rowHeights[groupData[2][x]]
@@ -78,6 +96,6 @@ function createGrid (obj) {
 	var ratioArr = getRatios(containerList);
 	var groupData = groupImages(ratioArr, obj.maxWidthHeightRatio);
 	var rowHeights = findRowHeight(groupData, obj.container.width, obj.container.margin, obj.container.width / obj.minWidthHeightRatio);
-	var imgAttr = printImages(containerList, rowHeights, groupData, ratioArr, null);
+	var imgAttr = printImages(containerList, rowHeights, groupData, ratioArr, null, obj);
 	obj.photoContainerElem.style.visibility = "visible";
 }

@@ -1,18 +1,18 @@
 # dynamicgrid.js
 
-###Description
+####Description
 This is meant to provide a similar aesthetic to Flickr's photostream. Rows of photographs are equal in height and photos are kept proportional to their original constraints.
 
 ##Implementing dynamicgrid.js
 
-###Before Implementation
+####Before Implementation
 All the photographs must already be inside the photo container div for this code to work if you are dynamically loading `containerList`. It uses `elem.querySelectorAll('img')` to find all available images to process and fit into the grid.
 Ensure the following before using:
 1. The container is set to `text-align: center`.
 2. Your images are set to `display: inline-block`.
 3. The container is set to `visibility: hidden`, as the container shouldn't be seen until the photos have loaded (due to height/width changes).
 
-###Implementation
+####Implementation
 Dynamicgrid.js takes an object as input for all specifications and looks like:
 
 ```javascript
@@ -45,10 +45,10 @@ var gridObject = {
 
 ##Loading
 
-###Static Loading
+####Static Loading
 You can now statically load a `containerList` by putting in a `containerList` argument into the object. The array will then be used to grid the photos rather than generating and calculating the grid on each load.
 
-###AJAX Loading
+####AJAX Loading
 It is important that all images have loaded inside the DOM before trying to get the stats on them. The easiest way to put off executing the script until then is to use jQuery `.load()`. Here's a short script to do so:
 
 ```javascript
@@ -59,10 +59,10 @@ $("#photo-container img").on('load', function(){
 
 ##Execution
 
-###Function Execution
+####Function Execution
 Finally, to execute the function, run `createGrid(gridObject)`.
 
-###Demo
+####Demo
 A demo of this is available on my site [here](http://lavancier.com/dynamicgrid/test.html).
 An AJAX load demo of this is available as well on my site [here](http://lavancier.com/dynamicgrid/redditload.html).
 

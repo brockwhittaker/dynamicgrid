@@ -60,7 +60,7 @@ function findRowHeight (groupData, width, margin, maxHeight) {
 }
 
 function printImages (containerList, rowHeights, groupData, ratioArr, imgArr) {
-	imgAttr = [];
+	var imgAttr = [];
 	obj.photoContainerElem.innerHTML = "";
 	for (var x = 0; x < containerList.length; x++) {
 		obj.photoContainerElem.innerHTML += "<img class='photo' src=" + containerList[x][2] + " style='height:" + rowHeights[groupData[2][x]] + "px;width:" + ratioArr[x] * rowHeights[groupData[2][x]]  +"px'></div>";
@@ -75,10 +75,10 @@ function printImages (containerList, rowHeights, groupData, ratioArr, imgArr) {
 }
 
 function createGrid (obj) {
-	containerList = generateContainerList();
-	ratioArr = getRatios(containerList);
-	groupData = groupImages(ratioArr, obj.maxWidthHeightRatio);
-	rowHeights = findRowHeight(groupData, obj.container.width, obj.container.margin, obj.container.width / obj.minWidthHeightRatio);
-	imgAttr = printImages(containerList, rowHeights, groupData, ratioArr, null);
+	var containerList = generateContainerList();
+	var ratioArr = getRatios(containerList);
+	var groupData = groupImages(ratioArr, obj.maxWidthHeightRatio);
+	var rowHeights = findRowHeight(groupData, obj.container.width, obj.container.margin, obj.container.width / obj.minWidthHeightRatio);
+	var imgAttr = printImages(containerList, rowHeights, groupData, ratioArr, null);
 	obj.photoContainerElem.style.visibility = "visible";
 }

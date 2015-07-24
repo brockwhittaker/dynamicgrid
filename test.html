@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+	#photo-container {
+		text-align: center;
+		width: 80vw;
+		visibility: hidden;
+		margin: 0 auto;
+	}
+
+	.photo {
+		display: inline-block;
+		background-color: #444;
+		margin: 5px;
+	}
+
+	img {
+		display: none;
+	}
+	</style>
+
+	<title>Dynamic Image Sizing</title>
+</head>
+<body>
+	<div id='photo-container'>
+		
+	</div>
+	<script type="text/javascript" src="dynamicgrid.js"></script>
+</body>
+</html>
+
+<script type="text/javascript">
+document.getElementById('photo-container').style.maxWidth = window.innerWidth * 0.8;
+
+//	clrCharList = "456789ABCDEF";
+
+
+for (var x = 0; x < 20; x++) {
+	document.getElementById('photo-container').innerHTML += "<img src='http://www.lavancier.com/photoalbum/" + (x + 1) + ".jpg'></img>";
+}
+
+var obj = {
+	maxWidthHeightRatio: 6,
+	container: {
+		width: 0.8 * window.innerWidth,
+		margin: 10
+	},
+	minWidthHeightRatio: 3,
+	photoContainerElem: document.getElementById('photo-container')
+};
+
+window.onload = function () {
+	createGrid(obj);
+}
+</script>

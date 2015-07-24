@@ -3,6 +3,8 @@
 ###Description
 This is meant to provide a similar aesthetic to Flickr's photostream. Rows of photographs are equal in height and photos are kept proportional to their original constraints.
 
+##Implementing dynamicgrid.js
+
 ###Before Implementation
 All the photographs must already be inside the photo container div for this code to work if you are dynamically loading `containerList`. It uses `elem.querySelectorAll('img')` to find all available images to process and fit into the grid.
 Ensure the following before using:
@@ -40,6 +42,8 @@ var gridObject = {
   photoContainerElem: photoContainerElem
 }
 ```
+
+##Loading
 
 ###Static Loading
 You can now statically load a `containerList` by putting in a `containerList` argument into the object. The array will then be used to grid the photos rather than generating and calculating the grid on each load.

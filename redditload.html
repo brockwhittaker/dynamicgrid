@@ -25,6 +25,7 @@
 	<div id='photo-container'></div>
 	<script type="text/javascript" src="dynamicgrid.js"></script>
 	<script type="text/javascript" src="nanoajax.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 </body>
 </html>
 
@@ -64,7 +65,12 @@ function getData (site) {
 		data = JSON.parse(responseText);
 		photoList = getPhotoList(data);
 		populatePhotoContainer(photoList);
-		createGrid(obj);
+
+		$("#photo-container img").on('load', function(){
+			createGrid(obj);
+		});
 	});
 }
+
+getData(site);
 </script>

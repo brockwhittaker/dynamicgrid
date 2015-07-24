@@ -76,7 +76,7 @@ function findRowHeight (groupData, width, margin, maxHeight) {
 	return rowHeights;
 }
 
-function printImages (containerList, rowHeights, groupData, ratioArr, imgArr, obj) {
+function printImages (containerList, rowHeights, groupData, ratioArr, obj) {
 	var imgAttr = [];
 	obj.photoContainerElem.innerHTML = "";
 	for (var x = 0; x < containerList.length; x++) {
@@ -92,10 +92,14 @@ function printImages (containerList, rowHeights, groupData, ratioArr, imgArr, ob
 }
 
 function createGrid (obj) {
-	var containerList = generateContainerList();
+	if (obj.containerList !== null && typeof obj.containerList !== "undefined") {
+		var containerList = obj.containerList;
+	} else {
+		var containerList = generateContainerList();
+	}
 	var ratioArr = getRatios(containerList);
 	var groupData = groupImages(ratioArr, obj.maxWidthHeightRatio);
 	var rowHeights = findRowHeight(groupData, obj.container.width, obj.container.margin, obj.container.width / obj.minWidthHeightRatio);
-	var imgAttr = printImages(containerList, rowHeights, groupData, ratioArr, null, obj);
+	var imgAttr = printImages(containerList, rowHeights, groupData, ratioArr, obj);
 	obj.photoContainerElem.style.visibility = "visible";
 }

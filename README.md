@@ -33,6 +33,9 @@ var gridObject = {
 
 Note that all the photographs must already be inside the photo container div for this code to work. It uses `elem.querySelectorAll('img')` to find all available images to process and fit into the grid. Ensure your container is also `text-align: center` and that your images are set to `display: inline-block`.
 
+Make sure also to set your photo container to `visibility: hidden` before executing the function. Otherwise you will see all the photos load to the container before gridding themselves.
+
 Finally, to execute the function, run `createGrid(gridObject)`.
 
+A demo of this is available on my site [here](http://lavancier.com/dynamicgrid/test.html).
 If you have any questions, feel free to reach me at [brock@lavancier.com](brock@lavancier.com).

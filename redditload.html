@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+	#photo-container {
+		text-align: center;
+		width: 80vw;
+		visibility: hidden;
+		margin: 0 auto;
+	}
+
+	.photo {
+		display: inline-block;
+		background-color: #444;
+		margin: 0px 3px;
+	}
+
+	img {
+		display: none;
+	}
+	</style>
+	<title></title>
+</head>
+<body>
+	<div id='photo-container'></div>
+	<script type="text/javascript" src="dynamicgrid.js"></script>
+	<script type="text/javascript" src="nanoajax.js"></script>
+</body>
+</html>
+
+<script type="text/javascript">
+var site = "https://www.reddit.com/r/earthporn/.json";
+
+var obj = {
+	maxWidthHeightRatio: 6,
+	container: {
+		margin: 3
+	},
+	minWidthHeightRatio: 3,
+	photoContainerElem: document.getElementById('photo-container'),
+	containerList: null
+};
+
+function getPhotoList (data) {
+	var photoList = [], y = 0;
+	for (var x = 0; x < data.data.children.length; x++) {
+		if (/.jpg|.png|.gif|.bmp/g.test(data.data.children[x].data.url)) {
+			photoList[y] = data.data.children[x].data.url;
+			y++;
+		}
+	}
+
+	return photoList;
+}
+
+function populatePhotoContainer (photoList) {
+	for (var x = 0; x < photoList.length; x++) {
+		document.getElementById('photo-container').innerHTML += "<img src='" + photoList[x] + "'></img>";
+	}
+}
+
+function getData (site) {
+	nanoajax.ajax(site, function (code, responseText) {
+		data = JSON.parse(responseText);
+		photoList = getPhotoList(data);
+		populatePhotoContainer(photoList);
+		createGrid(obj);
+	});
+}
+</script>

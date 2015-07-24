@@ -44,10 +44,20 @@ var gridObject = {
 ###Static Loading
 You can now statically load a `containerList` by putting in a `containerList` argument into the object. The array will then be used to grid the photos rather than generating and calculating the grid on each load.
 
+###AJAX Loading
+It is important that all images have loaded inside the DOM before trying to get the stats on them. The easiest way to put off executing the script until then is to use jQuery `.load()`. Here's a short script to do so:
+
+```javascript
+$("#photo-container img").on('load', function(){
+  createGrid(obj);
+});
+```
+
 ###Function Execution
 Finally, to execute the function, run `createGrid(gridObject)`.
 
 ###Demo
 A demo of this is available on my site [here](http://lavancier.com/dynamicgrid/test.html).
+An AJAX load demo of this is available as well on my site [here](http://lavancier.com/dynamicgrid/redditload.html).
 
 If you have any questions, feel free to reach me at [brock@lavancier.com](brock@lavancier.com).

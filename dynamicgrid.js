@@ -69,7 +69,7 @@ function findRowHeight (groupData, width, margin, maxHeight) {
 		if ((width - margin) / groupData[1][x] > maxHeight) {
 			rowHeights[x] = maxHeight;
 		} else {
-			rowHeights[x] = (width - margin * groupData[0][x].length) / groupData[1][x];
+			rowHeights[x] = (width - margin * groupData[0][x].length * 2) / groupData[1][x];
 		}
 	}
 

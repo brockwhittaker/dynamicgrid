@@ -17,12 +17,12 @@ function createNode (type, className, id, src, parent, height, width) {
 	parent.appendChild(node);
 }
 
-function generateContainerList () {
-	var array = obj.photoContainerElem.querySelectorAll("img")
+function generateContainerList (obj) {
+	var array = obj.photoContainerElem.querySelectorAll("img");
 
 	containerList = [];
 	for (var x = 0; x < array.length; x++) {
-		containerList[x] = [array[x].naturalWidth, array[x].naturalHeight, array[x].src];
+		containerList[x] = [array[x].naturalWidth, array[x].naturalHeight, array[x].src, array[x].className];
 	}
 
 	return containerList;
@@ -80,7 +80,7 @@ function printImages (containerList, rowHeights, groupData, ratioArr, obj) {
 	var imgAttr = [];
 	obj.photoContainerElem.innerHTML = "";
 	for (var x = 0; x < containerList.length; x++) {
-		createNode("img", "photo", null, containerList[x][2], obj.photoContainerElem, rowHeights[groupData[2][x]], rowHeights[groupData[2][x]] * ratioArr[x]);
+		createNode("img", containerList[x][3], null, containerList[x][2], obj.photoContainerElem, rowHeights[groupData[2][x]], rowHeights[groupData[2][x]] * ratioArr[x]);
 
 		imgAttr[x] = {
 			"height" : rowHeights[groupData[2][x]],
@@ -95,7 +95,7 @@ function createGrid (obj) {
 	if (obj.containerList !== null && typeof obj.containerList !== "undefined") {
 		var containerList = obj.containerList;
 	} else {
-		var containerList = generateContainerList();
+		var containerList = generateContainerList(obj);
 	}
 
 	if (obj.container.width !== null && typeof obj.container.width !== "undefined") {

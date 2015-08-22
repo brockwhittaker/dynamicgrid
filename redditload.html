@@ -2,7 +2,11 @@
 <html>
 <head>
 	<style type="text/css">
-	#photo-container {
+	body {
+		margin: 0;
+	}
+
+	.photo-containers {
 		text-align: center;
 		width: 80vw;
 		visibility: hidden;
@@ -17,11 +21,31 @@
 
 	img {
 		display: none;
+		cursor: pointer;
+	}
+
+	#photo-viewer {
+		position: fixed;
+		display: none;
+		top: 0;
+		width: 100vw;
+		height: 100vh;
+		background-color: rgba(255,255,255,0.7);
+		z-index: 1;
+	}
+
+	#large-photo {
+		display: block;
+		margin: 0 auto;
 	}
 	</style>
 	<title></title>
 </head>
 <body>
+	<div id='photo-viewer'>
+		<img id='large-photo' src=""></img>
+	</div>
+
 	<div id='photo-container'></div>
 	<script type="text/javascript" src="dynamicgrid.js"></script>
 	<script type="text/javascript" src="nanoajax.js"></script>
@@ -30,14 +54,16 @@
 </html>
 
 <script type="text/javascript">
-var site = "https://www.reddit.com/r/earthporn/.json";
+getDataCounter = 0;
+var site = "https://www.reddit.com/r/earthporn/";
+var after = "";
 
 var obj = {
 	maxWidthHeightRatio: 6,
 	container: {
 		margin: 3
 	},
-	minWidthHeightRatio: 3,
+	minWidthHeightRatio: 2,
 	photoContainerElem: document.getElementById('photo-container'),
 	containerList: null
 };
@@ -56,21 +82,112 @@ function getPhotoList (data) {
 
 function populatePhotoContainer (photoList) {
 	for (var x = 0; x < photoList.length; x++) {
-		document.getElementById('photo-container').innerHTML += "<img src='" + photoList[x] + "'></img>";
+		obj.photoContainerElem.innerHTML += "<img src='" + photoList[x] + "'></img>";
 	}
 }
 
-function getData (site) {
-	nanoajax.ajax(site, function (code, responseText) {
-		data = JSON.parse(responseText);
-		photoList = getPhotoList(data);
-		populatePhotoContainer(photoList);
+function getData (site, after) {
+	getDataCounter++;
+	if (getDataCounter !== 1) {
+		newPC = document.createElement("div");
+		newPC.id = "photo-container" + getDataCounter;
+		newPC.setAttribute("class", "photo-containers");
+		document.body.appendChild(newPC);
+		obj.photoContainerElem = newPC;
+	}
+	try	{
+		counter = 0;
+		nanoajax.ajax(site + ".json?counter=25&after=" + after, function (code, responseText) {
+			data = JSON.parse(responseText);
+			photoList = getPhotoList(data);
+			populatePhotoContainer(photoList);
 
-		$("#photo-container img").on('load', function(){
-			createGrid(obj);
+			redefineAfter();
+
+			var containerNumPhotos = document.getElementById(obj.photoContainerElem.id).getElementsByTagName('img');
+			$("#" + obj.photoContainerElem.id + " img").on('load', function(){
+				counter++;
+				if (counter === containerNumPhotos.length - 1) {
+					createGrid(obj);
+					createGrid(obj);
+					photoOnClick();
+					exitViewer();
+					addMorePhotos();
+				}
+			});
 		});
+	} catch (err) {
+		getData(site, after);
+	}
+}
+
+function redefineAfter () {
+	after = data.data.after;
+	console.log(after);
+}
+
+/*
+function addMorePhotos () {
+	$(document).scroll(function () {
+		if ($(document).scrollTop() + window.innerHeight >= $(document).height()) {
+			console.log(true);
+			getData(site, after);
+		}
+	})
+}
+*/
+
+function findConstraints ($this) {
+	var fullWidth = false;
+	if ($this[0].naturalWidth / $this[0].naturalHeight > window.innerWidth / window.innerHeight) {
+		fullWidth = true;
+	}
+
+	naturalRatio = $this[0].naturalWidth / $this[0].naturalHeight;
+
+	return fullWidth;
+}
+
+function exitViewer () {
+	$("*").click(function (e) {
+		console.log(e.target.id);
+		if (e.target.id === "photo-viewer") {
+			$("#photo-viewer").fadeOut(500);
+		}
+	});
+}
+
+function photoOnClick () {
+	$("img").click(function () {
+		var fullWidth = findConstraints($(this));
+		$("#large-photo").attr("src", $(this).attr("src"));
+		if (fullWidth) {
+			var height = (window.innerWidth * 0.8) / naturalRatio;
+			$("#large-photo").css({
+				"width" : "calc(0.8 * 100vw)",
+				"height" : "auto",
+				"margin-top" : "calc((100vh - " + height + "px) / 2)"
+			});
+		} else {
+			$("#large-photo").css({
+				"width" : "auto",
+				"height" : "calc(0.8 * 100vh)",
+				"margin-top" : "calc(10vh)"
+			});
+		}
+		$("#photo-viewer").fadeIn(500);
 	});
 }
 
 getData(site);
+
+// ----- google analytics tracking ----- //
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-56819347-1', 'auto');
+ga('send', 'pageview');
+// -------------------------------------- //
 </script>

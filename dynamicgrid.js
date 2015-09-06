@@ -49,7 +49,7 @@ function sizeImages (parent, list, indexList, margin, nodes) {
   nodes.map(function (i, o) {
     i.style.width = "calc((" + list[o] * 100 + "%) * (1 - " + parseFloat(margin) / 50 * indexList[o] + "))"; // because there are margins on both sides.
     i.style.height = "auto";
-    i.style.margin = "calc(" + margin + " - 2.5px) " + margin;
+    i.style.margin = "calc(" + margin + " - 3px) " + margin;
     //i.style.margin = "calc(" + margin + " - 2.5px) " + margin;
     i.style.display = "inline-block";
   });

@@ -9,16 +9,8 @@ Array.prototype.flatten = function () {
   return this.join(',').split(/,/g);
 }
 
-function displayNone (parent) {
-  var nodes = Array.prototype.slice.call(parent.querySelectorAll('img')); // convert nodeList to array
-  nodes.map(function (i, o) {
-    i.style.display = "none";
-  });
-}
-
-function grabImages (parent) {
+function grabImages (parent, nodes) {
   var imgList = [];
-  var nodes = Array.prototype.slice.call(parent.querySelectorAll('img')); // convert nodeList to array
 
   nodes.map(function (i, o) {
     imgList[o] = (i.naturalWidth) / (i.naturalHeight);
@@ -48,13 +40,12 @@ function binImages (max, list) {
       indexList.push(imgList[o].length);
       return x /= (sum);
     });
-  })
+  });
 
   return [imgList.flatten(), indexList]; // return indexList to figure out the margin needed on each line...
 }
 
-function sizeImages (parent, list, indexList, margin) {
-  var nodes = Array.prototype.slice.call(parent.querySelectorAll('img')); // convert nodeList to array
+function sizeImages (parent, list, indexList, margin, nodes) {
   nodes.map(function (i, o) {
     i.style.width = "calc((" + list[o] * 100 + "%) * (1 - " + parseFloat(margin) / 50 * indexList[o] + "))"; // because there are margins on both sides.
     i.style.margin = "calc(" + margin + " - 2.5px) " + margin;
@@ -64,12 +55,18 @@ function sizeImages (parent, list, indexList, margin) {
 }
 
 var imgList;
-function gridPhotos (parent, max, margin) {
+function gridPhotos (gridObject) {
   var list;
-  var nodes = Array.prototype.slice.call(parent.querySelectorAll('img')); // convert nodeList to array
-  nodes[nodes.length - 1].onload = function () {
-    list = grabImages(parent)
-    imgList = binImages(max, list);
-    sizeImages(parent, imgList[0], imgList[1], margin);
+  var nodes = Array.prototype.slice.call(gridObject.parent.querySelectorAll('img')); // convert nodeList to array
+  function photoLoad () {
+    list = grabImages(gridObject.parent, nodes)
+    imgList = binImages(gridObject.maxWidthHeighRatio, list);
+    sizeImages(parent, imgList[0], imgList[1], gridObject.photoMargin, nodes);
   } // this waits until the last photo's onload event triggers to start...
+
+  if (gridObject.photoOnLoad == true) {
+    nodes[nodes.length - 1].onload = photoLoad;
+  } else {
+    photoLoad();
+  }
 }

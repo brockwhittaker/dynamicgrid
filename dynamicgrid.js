@@ -1,120 +1,77 @@
-/* dynamicgrid.js */
+"use strict";
 
-function createNode (type, className, id, src, parent, height, width) {
-	var node = document.createElement(type);
-	node.setAttribute("class", className) || false;
-	if (id !== null) {
-		node.id = id || false;
-	}
-	if (className !== null) {
-		node.setAttribute("class", className) || false;
-	}
-
-	node.style.height = height + "px";
-	node.style.width = width + "px";
-	node.setAttribute("src", src);
-
-	parent.appendChild(node);
+Array.prototype.sum = function () {
+  return this.reduce(function (a, b) {
+    return a + b;
+  });
+  // this converts floats to strings but for this scenerio it is okay...
 }
 
-function generateContainerList (obj) {
-	var array = obj.photoContainerElem.querySelectorAll("img");
-
-	containerList = [];
-	for (var x = 0; x < array.length; x++) {
-		containerList[x] = [array[x].naturalWidth, array[x].naturalHeight, array[x].src, array[x].className];
-	}
-
-	return containerList;
+Array.prototype.flatten = function () {
+  return this.join(',').split(/,/g);
 }
 
-function getRatios (arr) {
-	var ratioArr = [];
-	for (var x = 0; x < arr.length; x++) {
-		ratio = arr[x][0] / arr[x][1];
-		ratioArr[x] = ratio;
-	}
-
-	return ratioArr;
+function displayNone (parent) {
+  var nodes = Array.prototype.slice.call(parent.querySelectorAll('img')); // convert nodeList to array
+  nodes.map(function (i, o) {
+    i.style.display = "none";
+  });
 }
 
-function groupImages (ratioArr, wHRatio) {
-	var groups = [[]];
-	var linearCata = [];
-	var endRatio = [];
-	var buffer = 0, y = 0;
+function grabImages (parent) {
+  var imgList = [];
+  var nodes = Array.prototype.slice.call(parent.querySelectorAll('img')); // convert nodeList to array
 
-	for (var x = 0; x < ratioArr.length; x++) {
-		if (buffer + ratioArr[x] < wHRatio) {
-			groups[y].push(x);
-			buffer += ratioArr[x];
-		} else {
-			buffer = 0;
-			y++;
-			groups[y] = [];
+  nodes.map(function (i, o) {
+    imgList[o] = (i.naturalWidth) / (i.naturalHeight);
+  });
 
-			groups[y].push(x);
-			buffer += ratioArr[x];
-		}
-		endRatio[y] = buffer;
-		linearCata[x] = y;
-	}
-
-	return [groups, endRatio, linearCata];
+  return imgList;
 }
 
-function findRowHeight (groupData, width, margin, maxHeight) {
-	var rowHeights = [];
-	for (var x = 0; x < groupData[1].length; x++) {
-		if ((width - margin) / groupData[1][x] > maxHeight) {
-			rowHeights[x] = maxHeight;
-		} else {
-			rowHeights[x] = (width - margin * groupData[0][x].length * 2) / groupData[1][x];
-		}
-	}
+function binImages (max, list) {
+  var buffer = 0, ratio = 0, level = 0, sum;
+  var imgList = [[]], indexList = [];
 
-	return rowHeights;
+  list.map(function (i, o) {
+    ratio += i;
+    if (ratio < max && ratio + list[o + 1] > max) {
+      imgList[imgList.length - 1].push(list[o]);
+      imgList.push([]);
+      ratio = 0;
+    } else {
+      imgList[imgList.length - 1].push(list[o]);
+    }
+  });
+
+  imgList = imgList.map(function (i, o) {
+    sum = i.sum();
+    return i.map(function (x, y) {
+      indexList.push(imgList[o].length);
+      return x /= (sum);
+    });
+  })
+
+  return [imgList.flatten(), indexList]; // return indexList to figure out the margin needed on each line...
 }
 
-function printImages (containerList, rowHeights, groupData, ratioArr, obj) {
-	var imgAttr = [];
-	var imgList = obj.photoContainerElem.querySelectorAll('img');
-	for (var x = 0; x < imgList.length; x++) {
-
-		imgList[x].style.height = rowHeights[groupData[2][x]] / obj.container.width * 100 + "%";
-		imgList[x].style.width = rowHeights[groupData[2][x]] * ratioArr[x] / obj.container.width * 100 + "%";
-
-		imgAttr[x] = {
-			"height" : rowHeights[groupData[2][x]],
-			"width" : ratioArr[x] * rowHeights[groupData[2][x]]
-		}
-	}
-
-	return imgAttr;
+function sizeImages (parent, list, indexList, margin) {
+  var nodes = Array.prototype.slice.call(parent.querySelectorAll('img')); // convert nodeList to array
+  nodes.map(function (i, o) {
+    i.style.width = "calc((" + list[o] * 100 + "%) * (1 - " + parseFloat(margin) / 50 * indexList[o] + "))"; // because there are margins on both sides.
+    i.style.margin = "calc(" + margin + " - 2.5px) " + margin;
+    //i.style.margin = "calc(" + margin + " - 2.5px) " + margin;
+    i.style.display = "inline-block";
+  });
 }
 
-function createGrid (obj) {
-	if (obj.containerList !== null && typeof obj.containerList !== "undefined") {
-		var containerList = obj.containerList;
-	} else {
-		var containerList = generateContainerList(obj);
-	}
-
-	if (obj.container.width !== null && typeof obj.container.width !== "undefined") {
-		var width = obj.container.width;
-	} else {
-		var width = obj.photoContainerElem.offsetWidth;
-	}
-
-	if (obj.container.margin !== null && typeof obj.container.margin !== "undefined") {
-		var margin = obj.container.margin;
-	} else {
-		var margin = 0;
-	}
-
-	var ratioArr = getRatios(containerList);
-	var groupData = groupImages(ratioArr, obj.maxWidthHeightRatio);
-	var rowHeights = findRowHeight(groupData, width, margin, width / obj.minWidthHeightRatio);
-	var imgAttr = printImages(containerList, rowHeights, groupData, ratioArr, obj);
-	obj.photoContainerElem.style.visibility = "visible";
+var imgList;
+function gridPhotos (parent, max, margin) {
+  var list;
+  var nodes = Array.prototype.slice.call(parent.querySelectorAll('img')); // convert nodeList to array
+  nodes[nodes.length - 1].onload = function () {
+    list = grabImages(parent)
+    imgList = binImages(max, list);
+    sizeImages(parent, imgList[0], imgList[1], margin);
+  } // this waits until the last photo's onload event triggers to start...
 }

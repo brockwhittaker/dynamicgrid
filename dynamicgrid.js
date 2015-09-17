@@ -1,11 +1,11 @@
-Array.prototype.sum = function () {
+function sum (arr) {
   return this.reduce(function (a, b) {
     return a + b;
   });
   // this converts floats to strings but for this scenerio it is okay...
 }
 
-Array.prototype.flatten = function () {
+function flatten (arr) {
   return this.join(',').split(/,/g);
 }
 
@@ -35,14 +35,14 @@ function binImages (max, list) {
   });
 
   imgList = imgList.map(function (i, o) {
-    sum = i.sum();
+    sum = sum(i);
     return i.map(function (x, y) {
       indexList.push(imgList[o].length);
       return x /= (sum);
     });
   });
 
-  return [imgList.flatten(), indexList]; // return indexList to figure out the margin needed on each line...
+  return [flatten(imgList), indexList]; // return indexList to figure out the margin needed on each line...
 }
 
 function sizeImages (parent, list, indexList, margin, nodes) {
@@ -59,12 +59,12 @@ function gridPhotos (gridObject) {
   var list;
   var nodes = Array.prototype.slice.call(gridObject.parent.querySelectorAll('img')); // convert nodeList to array
   function photoLoad () {
-    list = grabImages(gridObject.parent, nodes)
+    list = grabImages(gridObject.parent, nodes);
     imgList = binImages(gridObject.maxWidthHeighRatio, list);
     sizeImages(parent, imgList[0], imgList[1], gridObject.photoMargin, nodes);
   } // this waits until the last photo's onload event triggers to start...
 
-  if (gridObject.photoOnLoad == true) {
+  if (gridObject.photoOnLoad === true) {
     nodes[nodes.length - 1].onload = photoLoad;
   } else {
     photoLoad();

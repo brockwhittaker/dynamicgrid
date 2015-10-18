@@ -17,43 +17,41 @@ Dynamicgrid.js takes an object as input for all specifications and looks like:
 
 ```javascript
 var gridObject = {
-	maxWidthHeightRatio: 6,
-	container: {
-		width: 0.8 * window.innerWidth,
-		margin: 10
-	},
-	minWidthHeightRatio: 3,
-	photoContainerElem: document.getElementById('photo-container'),
-	containerList: null
+	"parent": node,
+	"maxWidthHeightRatio": 4,
+	"photoMargin": "0.4%",
+	"photoOnLoad": false
 };
 ```
 
-The specification `maxWidthHeightRatio` essentially specifies the thinnest the row can be. A value of `6` means that the width of the row cannot exceed 6 times the height of the row. Similarly the `minWidthHeightRatio` attribute specifies the minimum value. Note that if your minimum value is too high your row widths may come out uneven due to photos not being able to fit into either the minimum ratio.
+The specification `maxWidthHeightRatio` essentially specifies the thinnest the row can be. A value of `6` means that the width of the row cannot exceed 6 times the height of the row. Note that if your minimum value is too high your row widths may come out uneven due to photos not being able to fit into either the minimum ratio.
 
-In the container attribute there are two arguments: `width` and `margin`. Only use the margin attribute if there will be a CSS margin between each of the photos in the grid. The width specification should be the same as the width of the actual div you plan on placing the photos in. If the width isn't specified or is null, the width will default to the width of the element defined in `photoContainerElem`. Therefore the following will work:
+The `parent` specification allows you to specify the node container that the images will be in. This process is non-destructive. That means that images are resized dynamically but all their properties, classes, IDs, meta tags, and external tags are kept.
+
+The `photoMargin` attribute shows the margin between photographs. It can be specified in any CSS unit (eg. px, %, vw, vh, em, etc.).
 
 ```javascript
-var photoContainerElem = document.getElementById('photo-container');
+var photoGrids = Array.prototype.slice.call(document.getElementsByClassName('photo-grid'));
+
 var gridObject = {
-  container: {
-    width: null,
-    margin: 10
-  },
-  photoContainerElem: photoContainerElem
-}
+	"parent": null,
+	"maxWidthHeightRatio": 4,
+	"photoMargin": "0.4%",
+	"photoOnLoad": false
+};
+
+photoGrids.map(function (i) {
+	gridObject.parent = i;
+	gridPhotos(gridObject);
+});
 ```
 
-##Loading
-
-####Static Loading
-You can now statically load a `containerList` by putting in a `containerList` argument into the object. The array will then be used to grid the photos rather than generating and calculating the grid on each load.
-
-####AJAX Loading
-It is important that all images have loaded inside the DOM before trying to get the stats on them. The easiest way to put off executing the script until then is to use jQuery `.load()`. Here's a short script to do so:
+##AJAX Loading
+To AJAX load these grids dynamically, set the display to none by default and then run the function `onload`.
 
 ```javascript
 $("#photo-container img").on('load', function(){
-  createGrid(obj);
+	gridPhotos(gridObject);
 });
 ```
 
@@ -64,6 +62,5 @@ Finally, to execute the function, run `createGrid(gridObject)`.
 
 ####Demo
 A demo of this is available on my site [here](http://lavancier.com/dynamicgrid/test.html).
-An AJAX load demo of this is available as well on my site [here](http://lavancier.com/dynamicgrid/redditload.html).
 
 If you have any questions, feel free to reach me at [brock@lavancier.com](brock@lavancier.com).
